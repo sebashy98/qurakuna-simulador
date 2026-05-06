@@ -286,16 +286,21 @@ async function generar(){
 
   try{
     const pl=ST.planta, ma=ST.maceta;
-    sp(30,"Generando render con IA...","DALL-E · Esto toma ~20 segundos");
+    sp(30,"Procesando tu espacio...","Fal.ai · Esto toma ~30 segundos");
 
-    const prompt=`Photorealistic interior design magazine photo of a beautiful room.
-A stunning ${pl.desc} is elegantly placed in a ${ma.desc} as the focal point of the room.
-The plant looks lush and natural. Professional interior photography, warm natural lighting, 4K quality, sharp focus. No people.`;
+    const prompt=`Interior design photo. Add a beautiful ${pl.desc} placed in a ${ma.desc} in a natural empty spot of this room. Keep the room exactly as it is, only add the plant. Realistic, professional photography, warm natural lighting.`;
+
+    // Enviar imagen del cliente al backend
+    const body = { prompt };
+    if(ST.espDataURL){
+      body.imageBase64 = ST.espDataURL.split(",")[1];
+      body.imageType = ST.espFile?.type || "image/jpeg";
+    }
 
     const dr=await fetch("/api/generate",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({prompt})
+      body:JSON.stringify(body)
     });
 
     if(!dr.ok){
@@ -309,15 +314,15 @@ The plant looks lush and natural. Professional interior photography, warm natura
     setTimeout(()=>{
       document.getElementById("rWrap").innerHTML=`<img src="${dd.url}" alt="Render" style="width:100%;display:block;">`;
       desc.style.display="block";
-      desc.innerHTML=`<strong>🌿 Render generado</strong><br><br>Tu <strong>${pl.n}</strong> en <strong>maceta ${ma.n}</strong>.<br>
-        <span style="opacity:.6;font-size:.78rem;">Generado por DALL-E 3 · Las proporciones son referenciales.</span>`;
+      desc.innerHTML=`<strong>🌿 Render generado</strong><br><br>Tu <strong>${pl.n}</strong> en <strong>maceta ${ma.n}</strong> en tu espacio.<br>
+        <span style="opacity:.6;font-size:.78rem;">Generado por Fal.ai · Las proporciones son referenciales.</span>`;
       renderTips();
     },400);
 
   }catch(e){
     document.getElementById("lOv").style.display="none";
     err.style.display="block";
-    err.innerHTML=`<strong>⚠️ Error</strong><br>${e.message}<br><br><span style="opacity:.7;">Verifica que tu cuenta OpenAI tenga créditos e intenta de nuevo.</span>`;
+    err.innerHTML=`<strong>⚠️ Error</strong><br>${e.message}<br><br><span style="opacity:.7;">Intenta de nuevo.</span>`;
   }
 }
 
