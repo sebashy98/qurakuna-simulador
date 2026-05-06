@@ -12,34 +12,30 @@ module.exports = async function handler(req, res) {
     const FAL_KEY = process.env.FAL_API_KEY;
 
     if (imageBase64) {
-      // Paso 1: subir la imagen del cliente a Fal storage
+      // Subir imagen a Fal usando el endpoint correcto
       const imgBuffer = Buffer.from(imageBase64, 'base64');
       const mime = imageType || 'image/jpeg';
 
-      const uploadRes = await fetch('https://fal.run/fal-ai/storage/upload/initiate', {
+      // Fal storage upload - endpoint correcto
+      const uploadRes = await fetch('https://fal.run/fal-ai/storage/upload', {
         method: 'POST',
         headers: {
           'Authorization': `Key ${FAL_KEY}`,
-          'Content-Type': 'application/json'
+          'Content-Type': mime,
         },
-        body: JSON.stringify({ content_type: mime, file_name: 'room.jpg' })
-      });
-
-      if (!uploadRes.ok) {
-        const e = await uploadRes.json();
-        throw new Error('Upload initiate failed: ' + JSON.stringify(e));
-      }
-
-      const { upload_url, file_url } = await uploadRes.json();
-
-      // Paso 2: subir el archivo binario
-      await fetch(upload_url, {
-        method: 'PUT',
-        headers: { 'Content-Type': mime },
         body: imgBuffer
       });
 
-      // Paso 3: usar fal-ai/flux/dev/image-to-image para editar la foto real
+      if (!uploadRes.ok) {
+        const e = await uploadRes.text();
+        throw new Error('Upload failed: ' + e);
+      }
+
+      const uploadData = await uploadRes.json();
+      const imageUrl = uploadData.url;
+      if (!imageUrl) throw new Error('No URL from upload: ' + JSON.stringify(uploadData));
+
+      // Usar flux image-to-image con la foto real del cliente
       const falRes = await fetch('https://fal.run/fal-ai/flux/dev/image-to-image', {
         method: 'POST',
         headers: {
@@ -47,9 +43,9 @@ module.exports = async function handler(req, res) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          image_url: file_url,
+          image_url: imageUrl,
           prompt: prompt,
-          strength: 0.55,
+          strength: 0.6,
           num_inference_steps: 28,
           guidance_scale: 3.5,
           num_images: 1,
@@ -58,17 +54,17 @@ module.exports = async function handler(req, res) {
       });
 
       if (!falRes.ok) {
-        const e = await falRes.json();
-        throw new Error('Fal image-to-image failed: ' + JSON.stringify(e));
+        const e = await falRes.text();
+        throw new Error('Fal image-to-image failed: ' + e);
       }
 
       const falData = await falRes.json();
       const url = falData.images?.[0]?.url;
-      if (!url) throw new Error('No image returned from Fal');
+      if (!url) throw new Error('No image returned: ' + JSON.stringify(falData));
       return res.status(200).json({ url });
 
     } else {
-      // Sin imagen: generación pura con Fal flux
+      // Sin imagen: generación pura
       const falRes = await fetch('https://fal.run/fal-ai/flux/dev', {
         method: 'POST',
         headers: {
@@ -76,7 +72,7 @@ module.exports = async function handler(req, res) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          prompt: prompt,
+          prompt,
           num_inference_steps: 28,
           guidance_scale: 3.5,
           num_images: 1,
@@ -85,14 +81,9 @@ module.exports = async function handler(req, res) {
         })
       });
 
-      if (!falRes.ok) {
-        const e = await falRes.json();
-        throw new Error('Fal generation failed: ' + JSON.stringify(e));
-      }
-
       const falData = await falRes.json();
       const url = falData.images?.[0]?.url;
-      if (!url) throw new Error('No image returned from Fal');
+      if (!url) throw new Error('No image: ' + JSON.stringify(falData));
       return res.status(200).json({ url });
     }
 
