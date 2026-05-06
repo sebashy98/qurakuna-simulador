@@ -285,34 +285,13 @@ async function generar(){
   const sp=(p,t,s)=>{prog.style.width=p+"%";lTxt.textContent=t;lStep.textContent=s;};
 
   try{
-    sp(20,"Analizando tu espacio...","Claude Vision · Paso 1 de 2");
-    const pl=ST.planta,ma=ST.maceta;
+    const pl=ST.planta, ma=ST.maceta;
+    sp(30,"Generando render con IA...","DALL-E · Esto toma ~20 segundos");
 
-    // Claude analiza el espacio
-    let espacioDesc="a cozy interior room with natural light";
-    if(ST.espDataURL){
-      const cr=await fetch("https://api.anthropic.com/v1/messages",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          model:"claude-sonnet-4-20250514",max_tokens:200,
-          messages:[{role:"user",content:[
-            {type:"image",source:{type:"base64",media_type:ST.espFile?.type||"image/jpeg",data:ST.espDataURL.split(",")[1]}},
-            {type:"text",text:"Describe this interior room in English in 40 words: room type, wall color, floor, furniture style, lighting. Be specific."}
-          ]}]
-        })
-      });
-      const cd=await cr.json();
-      espacioDesc=cd.content?.find(b=>b.type==="text")?.text||espacioDesc;
-    }
+    const prompt=`Photorealistic interior design magazine photo of a beautiful room.
+A stunning ${pl.desc} is elegantly placed in a ${ma.desc} as the focal point of the room.
+The plant looks lush and natural. Professional interior photography, warm natural lighting, 4K quality, sharp focus. No people.`;
 
-    sp(55,"Generando render con DALL-E...","Paso 2 de 2 · ~20 segundos");
-
-    const prompt=`Photorealistic interior design magazine photo. The room is: ${espacioDesc}. 
-A beautiful ${pl.desc} is placed elegantly in a ${ma.desc} inside this room.
-The plant fits naturally with the decor. Professional photography, warm natural lighting, 4K quality. No people.`;
-
-    // Llamar al backend de Vercel (sin CORS!)
     const dr=await fetch("/api/generate",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
@@ -330,7 +309,7 @@ The plant fits naturally with the decor. Professional photography, warm natural 
     setTimeout(()=>{
       document.getElementById("rWrap").innerHTML=`<img src="${dd.url}" alt="Render" style="width:100%;display:block;">`;
       desc.style.display="block";
-      desc.innerHTML=`<strong>🌿 Render generado</strong><br><br>Tu <strong>${pl.n}</strong> en <strong>maceta ${ma.n}</strong> en tu espacio.<br>
+      desc.innerHTML=`<strong>🌿 Render generado</strong><br><br>Tu <strong>${pl.n}</strong> en <strong>maceta ${ma.n}</strong>.<br>
         <span style="opacity:.6;font-size:.78rem;">Generado por DALL-E 3 · Las proporciones son referenciales.</span>`;
       renderTips();
     },400);
@@ -338,7 +317,7 @@ The plant fits naturally with the decor. Professional photography, warm natural 
   }catch(e){
     document.getElementById("lOv").style.display="none";
     err.style.display="block";
-    err.innerHTML=`<strong>⚠️ Error</strong><br>${e.message}`;
+    err.innerHTML=`<strong>⚠️ Error</strong><br>${e.message}<br><br><span style="opacity:.7;">Verifica que tu cuenta OpenAI tenga créditos e intenta de nuevo.</span>`;
   }
 }
 
