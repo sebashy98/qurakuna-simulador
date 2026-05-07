@@ -11,12 +11,9 @@ module.exports = async function handler(req, res) {
 
     const FAL_KEY = process.env.FAL_API_KEY;
     const mime = imageType || 'image/jpeg';
-
-    // Pasar imagen como data URI directamente - Fal lo acepta sin subir
     const imageDataUri = imageBase64 ? `data:${mime};base64,${imageBase64}` : null;
 
     if (imageDataUri) {
-      // image-to-image con la foto real del cliente
       const falRes = await fetch('https://fal.run/fal-ai/flux/dev/image-to-image', {
         method: 'POST',
         headers: {
@@ -26,9 +23,9 @@ module.exports = async function handler(req, res) {
         body: JSON.stringify({
           image_url: imageDataUri,
           prompt: prompt,
-          strength: 0.6,
-          num_inference_steps: 28,
-          guidance_scale: 3.5,
+          strength: 0.85,
+          num_inference_steps: 35,
+          guidance_scale: 7,
           num_images: 1,
           enable_safety_checker: true
         })
@@ -41,7 +38,6 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ url });
 
     } else {
-      // Sin imagen: generación pura
       const falRes = await fetch('https://fal.run/fal-ai/flux/dev', {
         method: 'POST',
         headers: {
