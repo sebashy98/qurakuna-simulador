@@ -23,9 +23,9 @@ module.exports = async function handler(req, res) {
         body: JSON.stringify({
           image_url: imageDataUri,
           prompt: prompt,
-          strength: 0.85,
+          strength: 0.68,
           num_inference_steps: 35,
-          guidance_scale: 7,
+          guidance_scale: 5,
           num_images: 1,
           enable_safety_checker: true
         })
