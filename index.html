@@ -123,12 +123,7 @@ header{background:var(--verde);color:white;padding:16px 36px;display:flex;align-
 <div class="panel active" id="panel1">
   <div class="panel-title">Sube la foto de tu espacio</div>
   <div class="panel-sub">Sala, dormitorio, oficina, balcón — el rincón que quieres transformar</div>
-  <div class="upload-zone">
-    <input type="file" id="fEspacio" accept="image/*">
-    <div class="upload-icon">🏠</div>
-    <h3>Foto de tu espacio</h3>
-    <p>Arrastra o haz clic · JPG, PNG</p>
-  </div>
+  <div class="upload-zone"><input type="file" id="fEspacio" accept="image/*"><div class="upload-icon">🏠</div><h3>Foto de tu espacio</h3><p>Arrastra o haz clic · JPG, PNG</p></div>
   <div class="prev-box" id="pb1"><img id="imgE" src="" alt=""><div class="prev-info"><span>✓ Espacio listo</span><span>🌿</span></div></div>
   <div class="act"><div></div><button class="btn btn-p" id="btn1" onclick="goTo(2)" disabled>Elegir planta →</button></div>
 </div>
@@ -156,18 +151,18 @@ header{background:var(--verde);color:white;padding:16px 36px;display:flex;align-
 </div>
 <div class="panel" id="panel4">
   <div class="panel-title">Tu render 🌿</div>
-  <div class="panel-sub">Generado con inteligencia artificial</div>
+  <div class="panel-sub">Generado con Fal.ai · Basado en tu foto real</div>
   <div class="sel-bar" id="selBar"></div>
   <div class="res-layout">
     <div>
       <div class="render-box">
-        <div class="render-header"><span>🎨</span> Render generado por DALL-E</div>
+        <div class="render-header"><span>🎨</span> Render generado por IA</div>
         <div class="render-wrap" id="rWrap">
           <div class="loading-ov" id="lOv">
             <div class="ring"></div>
-            <div class="loading-txt" id="lTxt">Preparando...</div>
+            <div class="loading-txt" id="lTxt">Procesando tu espacio...</div>
             <div class="progress-wrap"><div class="progress" id="prog"></div></div>
-            <div style="color:rgba(255,255,255,.55);font-size:.76rem;" id="lStep">Iniciando</div>
+            <div style="color:rgba(255,255,255,.55);font-size:.76rem;" id="lStep">Fal.ai · ~30 segundos</div>
           </div>
         </div>
         <div class="render-desc" id="rDesc"></div>
@@ -204,22 +199,22 @@ const PLANTAS=[
   {id:"mini_bambu",n:"Mini Bambú",p:79,c:"regalo",h:"20-60 cm",cuidado:"Luz indirecta, muy resistente",desc:"mini bambú con tallos verdes esbeltos"},
   {id:"lirio_paz",n:"Lirio de Paz",p:280,c:"interior",h:"50-150 cm",cuidado:"Luz filtrada, riego moderado",desc:"lirio de paz con hojas brillantes y flores blancas"},
   {id:"aglaonema",n:"Aglaonema Silver",p:289,c:"interior",h:"50 cm",cuidado:"Tolera baja iluminación",desc:"aglaonema con hojas plateadas y bordes verdes"},
-  {id:"monstera",n:"Monstera Deliciosa",p:295,c:"interior",h:"60-100 cm",cuidado:"Luz indirecta brillante",desc:"planta grande con hojas verdes tropicales brillantes"},
+  {id:"monstera",n:"Monstera Deliciosa",p:295,c:"interior",h:"60-100 cm",cuidado:"Luz indirecta brillante",desc:"planta grande con hojas verdes tropicales"},
   {id:"ficus_lyrata",n:"Ficus Lyrata",p:389,c:"interior",h:"80-150 cm",cuidado:"Luz brillante indirecta",desc:"ficus lyrata con hojas grandes verdes en forma de violín"},
 ];
 const MACETAS=[
   {id:"fibra_cilindrica",n:"Cilíndrica",p:75,c:"fibra",t:"20-40 cm",desc:"maceta cilíndrica blanca de fibra de vidrio"},
-  {id:"fibra_malva",n:"Malva",p:85,c:"fibra",t:"35-72 cm",desc:"maceta alta elegante blanca de fibra de vidrio"},
+  {id:"fibra_malva",n:"Malva",p:85,c:"fibra",t:"35-72 cm",desc:"maceta alta blanca de fibra de vidrio"},
   {id:"fibra_esfera",n:"Esfera",p:99,c:"fibra",t:"26-45 cm",desc:"maceta esférica baja blanca de fibra de vidrio"},
   {id:"fibra_pera",n:"Pera",p:120,c:"fibra",t:"40-60 cm",desc:"maceta en forma de pera blanca de fibra de vidrio"},
-  {id:"fibra_capsula",n:"Cápsula",p:120,c:"fibra",t:"40-60 cm",desc:"maceta cápsula cilíndrica alta blanca de fibra de vidrio"},
+  {id:"fibra_capsula",n:"Cápsula",p:120,c:"fibra",t:"40-60 cm",desc:"maceta cápsula alta blanca de fibra de vidrio"},
   {id:"fibra_trapecio",n:"Trapecio",p:105,c:"fibra",t:"40-60 cm",desc:"maceta trapezoidal blanca de fibra de vidrio"},
-  {id:"poli_montecarlo",n:"Montecarlo",p:580,c:"polietileno",t:"64-79 cm",desc:"maceta grande Montecarlo de polietileno color arena con acabado liso"},
-  {id:"poli_vite",n:"Cilindro Vite",p:99,c:"polietileno",t:"24-39 cm",desc:"maceta cilíndrica de polietileno con textura espiral color arena"},
-  {id:"poli_borde",n:"Borde Clásico",p:329,c:"polietileno",t:"60-80 cm",desc:"maceta grande de polietileno gris con líneas horizontales"},
-  {id:"poli_rizado",n:"Cilindro Rizado",p:249,c:"polietileno",t:"50-70 cm",desc:"maceta cilíndrica de polietileno gris con textura rizada"},
-  {id:"poli_cacao",n:"Cacao",p:230,c:"polietileno",t:"40-70 cm",desc:"maceta de polietileno con textura acanalada color marrón natural"},
-  {id:"poli_cono",n:"Cono Vite",p:79,c:"polietileno",t:"40-70 cm",desc:"maceta cónica de polietileno con textura espiral color arena"},
+  {id:"poli_montecarlo",n:"Montecarlo",p:580,c:"polietileno",t:"64-79 cm",desc:"maceta grande Montecarlo color arena"},
+  {id:"poli_vite",n:"Cilindro Vite",p:99,c:"polietileno",t:"24-39 cm",desc:"maceta cilíndrica con textura espiral color arena"},
+  {id:"poli_borde",n:"Borde Clásico",p:329,c:"polietileno",t:"60-80 cm",desc:"maceta grande gris con líneas horizontales"},
+  {id:"poli_rizado",n:"Cilindro Rizado",p:249,c:"polietileno",t:"50-70 cm",desc:"maceta cilíndrica gris con textura rizada"},
+  {id:"poli_cacao",n:"Cacao",p:230,c:"polietileno",t:"40-70 cm",desc:"maceta con textura acanalada color marrón natural"},
+  {id:"poli_cono",n:"Cono Vite",p:79,c:"polietileno",t:"40-70 cm",desc:"maceta cónica con textura espiral color arena"},
 ];
 
 let ST={espDataURL:null,espFile:null,planta:null,maceta:null};
@@ -286,20 +281,23 @@ async function generar(){
 
   try{
     const pl=ST.planta, ma=ST.maceta;
-    sp(30,"Generando render con IA...","DALL-E · Esto toma ~20 segundos");
+    sp(30,"Procesando tu espacio con IA...","Fal.ai · ~30 segundos");
 
-    const prompt=`Interior room photo. Add a large lush ${pl.desc} in a ${ma.desc} prominently in the foreground of this exact room. The plant must be BIG and clearly visible in the scene. Keep all existing furniture and architecture unchanged. Only add the plant. Photorealistic, 4K, professional interior design photo.`;
+    const prompt=`This is an interior room photo. Keep this exact room unchanged. Add a ${pl.desc} placed in a ${ma.desc} in an empty spot of this room. The plant must be clearly visible. Photorealistic, professional interior design photo, 4K quality.`;
+
+    const body={prompt};
+    if(ST.espDataURL){
+      body.imageBase64=ST.espDataURL.split(",")[1];
+      body.imageType=ST.espFile?.type||"image/jpeg";
+    }
 
     const dr=await fetch("/api/generate",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({prompt})
+      body:JSON.stringify(body)
     });
 
-    if(!dr.ok){
-      const e=await dr.json();
-      throw new Error(e.error||"Error "+dr.status);
-    }
+    if(!dr.ok){const e=await dr.json();throw new Error(e.error||"Error "+dr.status);}
     const dd=await dr.json();
     if(!dd.url)throw new Error("No se recibió imagen");
 
@@ -307,15 +305,15 @@ async function generar(){
     setTimeout(()=>{
       document.getElementById("rWrap").innerHTML=`<img src="${dd.url}" alt="Render" style="width:100%;display:block;">`;
       desc.style.display="block";
-      desc.innerHTML=`<strong>🌿 Render generado</strong><br><br>Tu <strong>${pl.n}</strong> en <strong>maceta ${ma.n}</strong>.<br>
-        <span style="opacity:.6;font-size:.78rem;">Generado por DALL-E 3 · Las proporciones son referenciales.</span>`;
+      desc.innerHTML=`<strong>🌿 Tu espacio con ${pl.n}</strong> en <strong>maceta ${ma.n}</strong>.<br>
+        <span style="opacity:.6;font-size:.78rem;">Generado por Fal.ai · Las proporciones son referenciales.</span>`;
       renderTips();
     },400);
 
   }catch(e){
     document.getElementById("lOv").style.display="none";
     err.style.display="block";
-    err.innerHTML=`<strong>⚠️ Error</strong><br>${e.message}<br><br><span style="opacity:.7;">Verifica que tu cuenta OpenAI tenga créditos e intenta de nuevo.</span>`;
+    err.innerHTML=`<strong>⚠️ Error</strong><br>${e.message}`;
   }
 }
 
